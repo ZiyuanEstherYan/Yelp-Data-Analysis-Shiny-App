@@ -1,0 +1,29 @@
+z---
+title: "Step2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE}
+library(forcats)
+library(scales)
+```
+
+
+
+```{r}
+american <- Restaurants %>%
+  filter(cuisine == 'american') %>%
+  group_by(neighborhood) %>%
+  filter(neighborhood != 'NA') %>%  
+  summarise(review_count = sum(review_count.x), avg_star = mean(restaurant_star)) 
+
+ggplot(american) + 
+  geom_point(aes(x=reorder(neighborhood,avg_star),y=avg_star,size=review_count)) +
+  coord_flip() +
+  labs(x = 'Neighborhood', y = 'Average Ratings', title = 'Average Ratings of American Restaurants by Neighborhood', subtitle = "Las Vegas from 2015")
+```
+

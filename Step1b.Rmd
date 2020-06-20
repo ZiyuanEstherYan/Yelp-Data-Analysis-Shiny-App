@@ -1,0 +1,214 @@
+---
+title: "Step1.b"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidytext)
+install.packages("wordcloud")
+library(wordcloud)
+```
+
+```{r}
+Restaurants <- readRDS("~/git/452-project/Restaurants.rds")
+Restaurants_review <- readRDS("~/git/452-project/Restaurants_review.rds")
+```
+
+```{r}
+Restaurants %>%
+  group_by(cuisine) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(x = fct_reorder(cuisine, n), y = n)) + geom_bar(stat = 'identity') + coord_flip() + labs(x = 'number of restaurants', y = 'count', title = 'Popularity of Restaurants by Quantity', subtitle = "Las Vegas after 2015")
+```
+
+```{r}
+Restaurants_review %>%
+  group_by(cuisine) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(x = fct_reorder(cuisine, n), y = n)) + geom_bar(stat = 'identity') + coord_flip() + labs(x = 'number of reviews', y = 'count', title = 'Popularity of Restaurants by Review Mentions', subtitle = "Las Vegas after 2015")
+```
+
+```{r}
+Restaurants %>%
+  filter(cuisine == 'american'|cuisine == 'mexican'| cuisine == 'chinese' | cuisine == 'japanese' | cuisine == 'italian') %>%
+  group_by(cuisine) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(x = "", y = n, fill = cuisine)) +
+  geom_bar(width = 1, stat = "identity", color = "white") +
+  coord_polar("y", start = 0)+
+  geom_text(aes(y = n, label = paste0(round(n/sum(n)*100, 2), "%")), position = position_stack(vjust = 0.4), color = "white")+
+  theme_void() +
+  labs(title = 'Popularity of Restaurants by Quantity', subtitle = "Las Vegas after 2015")
+```
+
+
+```{r}
+Restaurants_review %>%
+  filter(cuisine == 'american'|cuisine == 'mexican'| cuisine == 'chinese' | cuisine == 'japanese' | cuisine == 'italian') %>%
+  group_by(cuisine) %>%
+  summarise(n = n()) %>%
+  ggplot(aes(x = "", y = n, fill = cuisine)) +
+  geom_bar(width = 1, stat = "identity", color = "white") +
+  coord_polar("y", start = 0)+
+  geom_text(aes(y = n, label = paste0(round(n/sum(n)*100, 2), "%")), position = position_stack(vjust = 0.5), color = "white")+
+  theme_void() +
+  labs(title = 'Popularity of Restaurants by Review Mentions', subtitle = "Las Vegas after 2015")
+```
+
+## Text Analysis (Categories)
+
+```{r}
+topWords <- Restaurants_review %>%
+  unnest_tokens(word, categories) %>%
+  count(word) %>%
+  anti_join(stop_words) %>%
+  filter(word != "restaurants" & word != "food") %>%
+  top_n(30)
+
+wordcloud(topWords$word,
+          topWords$n,
+          scale = c(5,0.5),
+          colors = brewer.pal(8, "Dark2"))
+```
+
+```{r}
+options(scipen = 200)
+topWords %>%
+  top_n(15) %>%
+  ggplot(aes(x=fct_reorder(word,n),y=n)) + geom_bar(stat='identity') + 
+  coord_flip() + theme_bw()+
+  labs(title='Top 15 Words in Categories', subtitle = 'Las Vegas after 2015',
+       x='Word',
+       y= 'Count')
+```
+
+```{r}
+# word cloud of American restaurants
+
+topWords_review <- Restaurants_review %>%
+  filter(cuisine == "american") %>%
+  unnest_tokens(word, text) %>%
+  count(word) %>%
+  anti_join(stop_words) %>%
+  filter(word != "restaurants" & word != "food") %>%
+  top_n(30)
+
+wordcloud(topWords_review$word,
+          topWords_review$n,
+          scale = c(5,0.5),
+          colors = brewer.pal(8, "Dark2"))
+```
+
+
+
+
+
+
+
+
+```{r}
+## meaningless?
+
+sample <- Restaurants_review[0:10,]
+
+topWords_ %>%
+  unnest_tokens(fourgram, text, token='ngrams', n=4) %>%
+  count(fourgram) %>%
+  top_n(10) %>%
+  ggplot(aes(x=fct_reorder(fourgram,n),y=n)) + geom_bar(stat='identity') + 
+  coord_flip() +
+  labs(title="Top Bi-grams",
+       x = "Counts",
+       y = "Terms")  
+```
+
+```{r}
+american_positive <- Restaurants_review %>%
+  filter(cuisine == "american") %>%
+  unnest_tokens(word, text) %>%
+  count(word) %>%
+  anti_join(stop_words) %>%
+  filter(word != "restaurants" & word != "food") %>%
+  inner_join(get_sentiments("bing"), by = "word") %>%
+  filter(sentiment == 'positive') %>%
+  top_n(15, wt = n) 
+
+wordcloud(american_positive$word,
+          american_positive$n,
+          scale = c(3,0.5),
+          colors = brewer.pal(8, "Dark2"))
+
+american_negative <- Restaurants_review %>%
+  filter(cuisine == "american") %>%
+  unnest_tokens(word, text) %>%
+  count(word) %>%
+  anti_join(stop_words) %>%
+  filter(word != "restaurants" & word != "food") %>%
+  inner_join(get_sentiments("bing"), by = "word") %>%
+  filter(sentiment == 'negative') %>%
+  top_n(15, wt = n)
+
+wordcloud(american_negative$word,
+          american_negative$n,
+          scale = c(3,0.5),
+          colors = brewer.pal(8, "Dark2"))
+```
+
+
+
+### Sentiment analysis for different cuisines
+### ?
+
+```{r}
+
+bing <- get_sentiments("bing") 
+
+# topWords_review <- Restaurants_review %>%
+  filter(cuisine == "american") %>%
+  unnest_tokens(word, text) %>%
+  count(word) %>%
+  anti_join(stop_words) %>%
+  filter(word != "restaurants" & word != "food") %>%
+  top_n(30)
+
+cuisine.sentiment <- Restaurants_review %>%
+  filter(cuisine == "american") %>%
+  unnest_tokens(word, text) %>%
+  inner_join(bing,by=c("word")) %>%
+  #left_join(Resta,by='reviewID') %>%
+  group_by(cuisine,sentiment) %>%
+  summarize(total=sum(n)) %>%
+  #inner_join(term.retaurant,by='cuisine') %>%
+  mutate(relative.sentiment = total/xxxx)
+
+
+cuisine.sentiment %>%
+  ggplot(aes(x=sentiment,y=relative.sentiment,fill=sentiment)) + geom_bar(stat='identity') + 
+  facet_wrap(~cuisine)+ theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+topWords_review <- Restaurants_review %>%
+  #filter(cuisine == "american") %>%
+  unnest_tokens(word, text) %>%
+  mutate(count(word)) %>%
+  anti_join(stop_words) %>%
+  filter(word != "restaurants" & word != "food") %>%
+  group_by(cuisine, sentiments) %>%
+  summarise(total=sum(n)) 
+#top_n(30)
+```
+
+```{r}
+topWords_review <- Restaurants_review %>%
+  group_by(cuisine) %>%
+  unnest_tokens(word, text) %>%
+  mutate(count(word)) %>%
+  anti_join(stop_words)
+```
+

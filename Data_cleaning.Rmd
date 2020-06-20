@@ -1,0 +1,109 @@
+---
+title: "Data Cleaning"
+author: "Ziyuan(Esther) Yan"
+date: "11/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(readr)
+library(dplyr)
+```
+
+```{r}
+business <- read_csv("~/git/MGTA 452 Project/MGTA 452 Project/Las_Vegas_Restaurants.csv")
+reviews <- read_csv("~/git/MGTA 452 Project/MGTA 452 Project/yelp_review.csv")
+```
+
+```{r}
+# get all the unique business id in business.csv
+unique_business <- unique(business$business_id)
+```
+
+```{r}
+# filter all rows in reviews that have the business_id in unique_business
+reviews <- reviews %>%
+  filter(business_id %in% unique_business)
+```
+
+```{r}
+# joing two tables together, select the rows we want
+las_vegas_restaurant <- reviews %>%
+  left_join(business, by = "business_id") %>%
+  select(business_id, name, address, postal_code, latitude, longitude, stars.x, stars.y, review_count, categories, review_id, user_id, date, text)
+```
+
+```{r}
+saveRDS(las_vegas_restaurant, "las_vegas_restaurant.rds")
+```
+
+```{r}
+las_vegas_restaurant <- readRDS("~/git/MGTA 452 Project/MGTA 452 Project/las_vegas_restaurant.rds")
+
+# and then filter out data since 2015
+# Use Stella's Code
+```
+
+```{r}
+las_vegas_from2015 <- readRDS("~/git/MGTA 452 Project/MGTA 452 Project/las_vegas_from2015.rds")
+```
+
+```{r}
+# rename columns
+# stars.y: restaurant stars
+# stars.x: review starts for each individual
+las_vegas_from2015_new <- las_vegas_from2015 %>%
+  rename(restaurant_star = stars.y, review_star = stars.x) %>%
+  #mutate(lower_categories = tolower(categories)) %>%
+  mutate(
+    cuisine = case_when(
+      grepl("american", categories, ignore.case = TRUE) == TRUE ~ "american",
+      grepl("italian", categories, ignore.case = TRUE) == TRUE ~ "italian",
+      grepl("mexican", categories, ignore.case = TRUE) == TRUE ~ "mexican",
+      grepl("chinese", categories, ignore.case = TRUE) == TRUE ~ "chinese",
+      grepl("indian", categories, ignore.case = TRUE) == TRUE ~ "indian",
+      grepl("thai", categories, ignore.case = TRUE) == TRUE ~ "thai",
+      grepl("korean", categories, ignore.case = TRUE) == TRUE ~ "korean",
+      grepl("japanese", categories, ignore.case = TRUE) == TRUE ~ "japanese",
+      grepl("french", categories, ignore.case = TRUE) == TRUE ~ "french",
+      grepl("vietnamese", categories, ignore.case = TRUE) == TRUE ~ "vietnamese",
+      grepl("mediterranean", categories, ignore.case = TRUE) == TRUE ~ "mediterranean",
+      grepl("hawaiian", categories, ignore.case = TRUE) == TRUE ~ "hawaiian",
+      grepl("irish", categories, ignore.case = TRUE) == TRUE ~ "irish",
+      grepl("german", categories, ignore.case = TRUE) == TRUE ~ "german",
+      grepl("russian", categories, ignore.case = TRUE) == TRUE ~ "russian",
+      grepl("american", categories, ignore.case = TRUE) == FALSE ~ "others"
+    )
+  )
+```
+
+```{r}
+x <- las_vegas_from2015_new %>%
+  select(business_id, name, address, postal_code, latitude, longitude, restaurant_star, review_count, cuisine) %>%
+  left_join(las_vegas_from2015_new, by = "business_id")
+  
+```
+
+```{r}
+
+```
+
+
+
+```{r}
+saveRDS(las_vegas_from2015_new, "las_vegas_1123.rds")
+```
+
+```{r}
+saveRDS(yelp_review, "yelp_review.rds")
+```
+
+
+
+
+

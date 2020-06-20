@@ -1,0 +1,22 @@
+---
+title: "Visualization"
+author: "Ziyuan(Esther) Yan"
+date: "11/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+las_vegas_1123 <- readRDS("~/git/MGTA 452 Project/MGTA 452 Project/las_vegas_1123.rds")
+```
+
+```{r}
+# popularity by 
+x <- las_vegas_1123 %>%
+  group_by(cuisine) %>%
+  filter(cuisine == "others")
+```
+
