@@ -63,8 +63,6 @@ Ideally, a user would be able to look at the review data to see what users are d
 
 
 ## Challenges/Future Work
-This project did not come without its share of challenges. As it was my first exposure to Shiny, the whole process was a learning experience in itself. There were many iterations to complete, and trying to learn a new framework within a time frame of two weeks is a challenge with respect to any programming language/framework, especially when the deliverable is a final project for a graduate course. On the topic of the time constraint, there were many additional features I was hoping to add.
-
  1. Integration of demographics data
  
 The initial hope for the map was that it would include some access to demographics data. This would help the user better understand a potential market in terms of its future customers (i.e. income data)
@@ -75,6 +73,4 @@ Another hope for the interactive map was the ability to visualize some costs ass
 
  3. More NLP use 
  
-Due to time constraint, I was not able to explore more extensive NLP techniques (i.e. topic modeling). This could have made the review analysis section of the dashboard stronger. 
-
-As with any project, there is plenty of room for growth. Thank you for reading, and please let me know if you can think of anything else to add!
+More extensive NLP techniques (i.e. topic modeling) could have made the review analysis section of the dashboard stronger. 
