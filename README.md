@@ -7,6 +7,7 @@ According the Bureau of Labor Statistics, only 25% of business manage to stay op
 
 While the hardest part of the small business creation process may in fact come before the market entrance itself, this part brings on many challenges of its own. Once an idea has translated from an idea to a physical space, the complexity of the problems that a business owner now faces increases exponentially. Questions can arise ranging from managing customers to managing the actual business space, assuming we are discussing a business with an actual location. The problems, if not managed adequately, can lead a business to its demise. For this reason, a tool that would help prospective business owners anticipate potential issues in these domains can help them better prepare for them. 
 
+
 ## Business Problem
 "How can analytics be used to assist prospective business owners in planning for challenges to come with entering a new market". Specifically, I was hoping to use the abundant visualization tools associated with both geographic and text data to create a interactive platform for users to better understand possible locations/markets they hoped to enter. 
 
@@ -21,8 +22,6 @@ while the review dataset contained information such as:
 
 
 ![alt text](images/reviews_preview.PNG "Review Preview")
-
-While this Kaggle dataset was a great resource, finding data on Kaggle was not my intended method of data collection. Since I chose R as my programming language of choice, I ran a Python script using BeautifulSoup/Selenium through R to collect data from Yelp. However, as Yelp prohibits scraping and the method was quite slow, I settled on the Kaggle data. 
 
 
 ## Building the dashboard
