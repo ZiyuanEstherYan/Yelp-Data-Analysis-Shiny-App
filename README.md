@@ -25,9 +25,7 @@ while the review dataset contained information such as:
 
 
 ## Building the dashboard
-While my Big Data course had extensively covered ggplot and Tidyverse, Shiny was not. I decided to learn this tool as a way to apply what I had learned to a new R package. I had used some Shiny apps in the past, and this project would be a great way to investigate the usefulness of Shiny dashboards. After loading the data from Kaggle, the first steps were data "cleaning" (data comes relatively clean so hard to call it cleaning). My hope was to segment businesses by both category and location. Location would involve the use of Leaflet and a Google Maps API key to find the Lat/Lon coordinates of businesses from their address. Segmenting by category was hard to automate, and required the drafting of a list of the most popular business categories based on "domain knowledge". 
-
-After creating categories for each business, it was time to decided on the different features:
+After cleaning the data, and segmenting businesses by both category and location, it was time to decided on the different features:
 
 This first is a interactive visualization map, which allows for the simple visualization of businesses, either by city, category of business, or both. For example, here is a visualization of all nightlife businesses in Toronto:
 
